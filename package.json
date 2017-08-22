@@ -1,0 +1,20 @@
+{
+  "name": "shopping_cart",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Pranjal Sharma <pranjal.sharma306500@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "connect-flash": "^0.1.1",
+    "ejs": "^2.5.7",
+    "express": "^4.15.4",
+    "express-messages": "^1.0.1",
+    "express-session": "^1.15.5",
+    "express-validator": "^3.2.1",
+    "mongoose": "^4.11.7"
+  }
+}

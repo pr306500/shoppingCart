@@ -1,0 +1,20 @@
+1. npm i --save express.
+2. Html file is known as template file.
+3. ejs is a template engine, to set it, we use app.set().
+4. path.join(__dirname,'views') => It joins the current directory along with 'views'.
+5. set the view engine to ejs --> app.set('view engine','ejs');
+6. View engine se express ko pata chalta h k tu konsa templating engine use kr ra h =>>> 
+   app.set('view engine', 'ejs');
+7. App.set view wale syntax se tera tempaltes ka directory specify hota h ==> app.set('views',path.join(__dirname,'views'))
+8. app.use(express.static(path.join(__dirname,'public'))); ==> 
+   To serve static files such as images, CSS files, and JavaScript files, use the express.static built-in middleware function in Express
+
+9. nodemon app.js and app.js is the entry point.
+10. <a href="/admin/pages" class="btn btn-primary">Back to all pages</a> => When we click on 'Back to all pages',
+    then it will revert to route '/admin/pages'.
+11. res.render('/home/xyz'),  refers to the view folder.
+12. render/redirect/send
+    render :- In view directory
+    redirect :- Route related
+    send :- text related
+    href :- route

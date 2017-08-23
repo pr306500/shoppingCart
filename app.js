@@ -108,6 +108,14 @@ router.route('/admin/categories/add-category')
 router.route('/admin/categories/add-category')
       .post(adminCategory.saveCategory)
 
+router.route('/admin/categories/edit-category/:slug')
+      .get(adminCategory.editCategory)
+
+router.route('/admin/categories/edit-category/:slug')
+      .post(adminCategory.saveEditCategory);      
+
+router.route('/admin/categories/delete-category/:slug')
+      .get(adminCategory.deleteCategory);  
 
 //Start the server 
 app.use('/',router);

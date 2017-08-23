@@ -22,6 +22,49 @@ exports.addCategory = function(req,res){
 
 }
 
+exports.editCategory = function(req,res){
+  Category.findOne({'_id':req.params.slug})
+          .then((category)=>{
+            
+            res.render('admin/edit_category.ejs',{
+              'title':category.title,
+              'id':category._id
+            })
+
+      })
+
+}
+
+exports.saveEditCategory = function(req,res){
+
+  Category.findOneAndUpdate({'_id':req.params.slug},req.body)
+          .then((category)=>Category.find({}))
+          .then((category)=>{
+            
+           res.render('admin/categories.ejs',{
+            'categories' : category
+           });
+
+     })
+}
+
+exports.deleteCategory = function(req,res){
+
+ Category.findByIdAndRemove(req.params.slug)
+         .then(()=>{Category.findOne({_id:req.params.slug})})
+         .then((category)=>{
+          if(!category){
+            Category.find({})
+                    .then((category)=>{
+                      res.render('admin/categories',{
+                        categories : category
+                      })
+                    })
+          }
+         })
+
+}
+
 exports.saveCategory = function(req,res){
    
    req.checkBody('title','Title must have a value.').notEmpty();

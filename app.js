@@ -6,10 +6,18 @@ var bodyParser = require('body-parser');//To post thr json request.
 var router = express.Router();
 var pageController = require('./routes/pages.js')
 var adminController = require('./routes/admin_pages.js');
+var productController = require('./routes/admin_products.js')
 var session = require('express-session');
 var expressValidator = require('express-validator');
 var adminCategory = require('./routes/admin_categories.js');
+var fileUpload = require('express-fileupload');
+
 app.locals.errors = null;
+
+//Express fileUpload middleware
+
+app.use(fileUpload());
+
 var mongoose = require('mongoose');
     mongoose.connect(config.database);
 
@@ -56,7 +64,24 @@ app.use(expressValidator({
       msg   : msg,
       value : value
     };
-  }
+  },
+  customValidators: {
+        isImage: function (value, filename) {
+            var extension = (path.extname(filename)).toLowerCase();
+            switch (extension) {
+                case '.jpg':
+                    return '.jpg';
+                case '.jpeg':
+                    return '.jpeg';
+                case '.png':
+                    return '.png';
+                case '':
+                    return '.jpg';
+                default:
+                    return false;
+            }
+        }
+    }
 }));
 
 /*Middleware used for hifhlighting the error message*/
@@ -116,6 +141,15 @@ router.route('/admin/categories/edit-category/:slug')
 
 router.route('/admin/categories/delete-category/:slug')
       .get(adminCategory.deleteCategory);  
+
+router.route('/admin/products')
+      .get(productController.getHome);
+
+router.route('/admin/products/add-product')
+      .get(productController.addProduct)
+
+router.route('/admin/products/add-product')
+      .post(productController.saveNewProduct)             
 
 //Start the server 
 app.use('/',router);

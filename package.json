@@ -12,9 +12,13 @@
     "connect-flash": "^0.1.1",
     "ejs": "^2.5.7",
     "express": "^4.15.4",
+    "express-fileupload": "^0.1.4",
     "express-messages": "^1.0.1",
     "express-session": "^1.15.5",
     "express-validator": "^3.2.1",
-    "mongoose": "^4.11.7"
+    "fs-extra": "^4.0.1",
+    "mkdir": "0.0.2",
+    "mongoose": "^4.11.7",
+    "resize-img": "^1.1.2"
   }
 }

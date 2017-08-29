@@ -140,6 +140,7 @@ exports.editProduct = function(req,res){
             var galleryImages = null;
 
             fs.readdir(galleryDir,(err,files)=>{
+              
               if(err){
                 console.log('line 145/admin_products.js')
               }else{
@@ -147,10 +148,11 @@ exports.editProduct = function(req,res){
                     res.render('admin/edit_product.ejs',{
 
                     'title':product.title,
+                    'errors':errors,
                      'id':product._id,
                      'desc':product.desc,
                      'categories':categories,
-                     'price':product.price,
+                     'price':parseFloat(product.price).toFixed(2),
                      'image':product.image,
                      'galleryImages':galleryImages
                 })

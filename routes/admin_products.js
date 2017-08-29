@@ -161,7 +161,6 @@ exports.editProduct = function(req,res){
         res.redirect('/admin/products')
       })
 }
-
 exports.saveEditCategory = function (req, res) {
 
     Category.findOneAndUpdate({ '_id': req.params.slug }, req.body)

@@ -2,16 +2,24 @@ var express = require('express');
 var app = express();
 var path = require('path');
 var config = require('./config/database.js');
-var bodyParser = require('body-parser');//To post thr json request.
+var bodyParser = require('body-parser');//To post the json request.
 var router = express.Router();
 var pageController = require('./routes/pages.js')
 var adminController = require('./routes/admin_pages.js');
 var productController = require('./routes/admin_products.js')
-var session = require('express-session');
-var expressValidator = require('express-validator');
+var session = require('express-session');//server side session 
+var expressValidator = require('express-validator');// validation middleware
 var adminCategory = require('./routes/admin_categories.js');
-var fileUpload = require('express-fileupload');
+var fileUpload = require('express-fileupload');// req.files.image 
+/*
+Middleware used below
 
+express-session
+express-validator
+express-fileupload
+body-parser
+
+*/
 app.locals.errors = null;
 
 //Express fileUpload middleware
@@ -34,7 +42,8 @@ var mongoose = require('mongoose');
 app.set('views',path.join(__dirname,'views'))
 app.set('view engine', 'ejs');
 
-//Set public folder
+
+/*through this we could post the request in express*/
 app.use(bodyParser.urlencoded({
   extended: true
 }));
@@ -92,8 +101,7 @@ app.use(function (req, res, next) {
 });
 
 
-// routes
-/*It's used for rendering the static files like images.*/
+/*It's used for rendering the static files like images, so it will automatically search in the public folder*/
 app.use(express.static(path.join(__dirname,'public')));
 
 router.route('/')

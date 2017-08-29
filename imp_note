@@ -18,3 +18,36 @@
     redirect :- Route related
     send :- text related
     href :- route
+13. 'app.use(express.static(path.join(__dirname,'public')))', in ejs file src = '/product_images/<%= product._id %>/<%= product.image %>
+     will automatically look into the public folder.
+
+14. express-session >> For mantaining the session from server side.
+    express-validator >> Provides the validation middleware
+    express-fileupload >> through this we could upload the images
+    body-parser >> for posting the body
+
+15. <table style="width:100%">
+    <tr>
+        <th>Firstname</th>
+        <th>Lastname</th> 
+        <th>Age</th>
+    </tr>
+    <tr>
+        <td>Jill</td>
+        <td>Smith</td> 
+        <td>50</td>
+    </tr>
+    <tr>
+        <td>Eve</td>
+        <td>Jackson</td> 
+        <td>94</td>
+    </tr>
+    </table>
+    Theory :- <tr> represents the table row
+              <th> represents the table header/main headings
+              <td> represents the table data cell
+
+16. <td>
+    <img src="smiley.gif" width="42" height="42">
+    </td>
+    Theory :- It will render smiley image at specific cellof a table.

@@ -157,7 +157,10 @@ router.route('/admin/products/add-product')
       .get(productController.addProduct)
 
 router.route('/admin/products/add-product')
-      .post(productController.saveNewProduct)             
+      .post(productController.saveNewProduct) 
+
+router.route('/admin/products/edit-product/:id')
+      .get(productController.editProduct)            
 
 //Start the server 
 app.use('/',router);

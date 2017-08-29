@@ -121,17 +121,45 @@ exports.saveNewProduct = function (req, res) {
 
 }
 
-exports.editCategory = function (req, res) {
-    Category.findOne({ '_id': req.params.slug })
-        .then((category) => {
+exports.editProduct = function(req,res){
+  let categories;
+  let errors;
 
-            res.render('admin/edit_category.ejs', {
-                'title': category.title,
-                'id': category._id
+  if(req.session.errors)
+    errors = req.session.errors;
+    req.session.errors = null;
+
+  Category.find({})
+          .then((category)=>{
+              categories = category
+          })
+  Products.findOne({'_id':req.params.id})
+          .then((product)=>{
+
+            var galleryDir = 'public/product_images/'+product._id+'/gallery';
+            var galleryImages = null;
+
+            fs.readdir(galleryDir,(err,files)=>{
+              if(err){
+                console.log('line 145/admin_products.js')
+              }else{
+                 galleryImages = files;
+                    res.render('admin/edit_product.ejs',{
+
+                    'title':product.title,
+                     'id':product._id,
+                     'desc':product.desc,
+                     'categories':categories,
+                     'price':product.price,
+                     'image':product.image,
+                     'galleryImages':galleryImages
+                })
+              }
             })
-
-        })
-
+      })
+      .catch((error)=>{
+        res.redirect('/admin/products')
+      })
 }
 
 exports.saveEditCategory = function (req, res) {

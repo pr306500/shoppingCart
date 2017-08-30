@@ -162,10 +162,12 @@ router.route('/admin/products/add-product')
 router.route('/admin/products/edit-product/:id')
       .get(productController.editProduct)            
 
+router.route('/admin/products/edit-product/:id')
+      .post(productController.saveEditProduct) 
 //Start the server 
 app.use('/',router);
-app.listen('3000',()=>{
+app.listen('3001',()=>{
 
-console.log('server started on port',+3000);
+console.log('server started on port',+3001);
 
 });

@@ -121,59 +121,96 @@ exports.saveNewProduct = function (req, res) {
 
 }
 
-exports.editProduct = function(req,res){
-  let categories;
-  let errors;
+exports.editProduct = function (req, res) {
+    let categories;
+    let errors;
 
-  if(req.session.errors)
-    errors = req.session.errors;
+    if (req.session.errors)
+        errors = req.session.errors;
     req.session.errors = null;
 
-  Category.find({})
-          .then((category)=>{
-              categories = category
-          })
-  Products.findOne({'_id':req.params.id})
-          .then((product)=>{
+    Category.find({})
+        .then((category) => {
+            categories = category
+        })
+    Products.findOne({ '_id': req.params.id })
+        .then((product) => {
 
-            var galleryDir = 'public/product_images/'+product._id+'/gallery';
+            var galleryDir = 'public/product_images/' + product._id + '/gallery';
             var galleryImages = null;
 
-            fs.readdir(galleryDir,(err,files)=>{
-              
-              if(err){
-                console.log('line 145/admin_products.js')
-              }else{
-                 galleryImages = files;
-                    res.render('admin/edit_product.ejs',{
+            fs.readdir(galleryDir, (err, files) => {
 
-                    'title':product.title,
-                    'errors':errors,
-                     'id':product._id,
-                     'desc':product.desc,
-                     'categories':categories,
-                     'price':parseFloat(product.price).toFixed(2),
-                     'image':product.image,
-                     'galleryImages':galleryImages
-                })
-              }
+                if (err) {
+                    console.log('line 145/admin_products.js')
+                } else {
+                    galleryImages = files;
+                    res.render('admin/edit_product.ejs', {
+
+                        'title': product.title,
+                        'errors': errors,
+                        'id': product._id,
+                        'desc': product.desc,
+                        'categories': categories,
+                        'price': parseFloat(product.price).toFixed(2),
+                        'image': product.image,
+                        'galleryImages': galleryImages
+                    })
+                }
             })
-      })
-      .catch((error)=>{
-        res.redirect('/admin/products')
-      })
-}
-exports.saveEditCategory = function (req, res) {
-
-    Category.findOneAndUpdate({ '_id': req.params.slug }, req.body)
-        .then((category) => Category.find({}))
-        .then((category) => {
-
-            res.render('admin/categories.ejs', {
-                'categories': category
-            });
-
         })
+        .catch((error) => {
+            res.redirect('/admin/products')
+        })
+}
+exports.saveEditProduct = function (req, res) {
+
+    var imageFile = typeof req.files.image !== 'undefined' ? req.files.image.name : '';
+
+    req.checkBody('title', 'Title must have a value').notEmpty();
+    req.checkBody('desc', 'Description must have a value').notEmpty();
+    req.checkBody('price', 'Price must have a value').isDecimal();
+    req.checkBody('image', 'You have to upload the image').isImage(imageFile);
+
+    var title = req.body.title;
+    var slug = title.replace(/\s+/g, '-').toLowerCase();
+    var desc = req.body.desc;
+    var price = req.body.price;
+    var category = req.body.category;
+    var pimage = req.body.pimage;
+    var id = req.params.id;
+
+    var errors = req.validationErrors();
+    if (errors) {
+        req.session.errors = errors;
+        res.redirect('/admin/products/edit-product/' + id);
+    } else {
+        Products.findOne({ slug: slug, _id: { '$ne': id } }, (err, product) => {
+            if (err) {
+                console.log(err)
+            }
+            if (product) {
+                req.flash('danger', 'Product title exists, choose another');
+                res.redirect('/admin/products/edit-product' + id);
+            } else {
+                Product.findById(id, (err, product) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                    product.title = title;
+                    product.slug = slug;
+                    product.desc = desc;
+                    product.price = parseFloat(price).toFixed(2);
+                    product.category = category;
+                    if (imageFile != "") {
+                        if (pimage != "") {
+                            fs.remove('')
+                        }
+                    }
+                })
+            }
+        })
+    }
 }
 
 exports.deleteCategory = function (req, res) {

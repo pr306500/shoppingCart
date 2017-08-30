@@ -193,7 +193,7 @@ exports.saveEditProduct = function (req, res) {
                 req.flash('danger', 'Product title exists, choose another');
                 res.redirect('/admin/products/edit-product' + id);
             } else {
-                Product.findById(id, (err, product) => {
+                Products.findById(id, (err, product) => {
                     if (err) {
                         console.log(err);
                     }
@@ -204,9 +204,21 @@ exports.saveEditProduct = function (req, res) {
                     product.category = category;
                     if (imageFile != "") {
                         if (pimage != "") {
-                            fs.remove('')
+                            fs.remove('public/product_images/' + id + '/' + pimage, (err) => {
+                                if (err) {
+                                    console.log(err);
+                                }
+                            });
                         }
+                        var productImage = req.files.image;
+                        var path = "public/product_images/"+id+'/'+imageFile;
+
+                        productImage.mv(path,(err)=>{
+                            return console.log(err);
+                        })
                     }
+                    req.flash('success','Product edited');
+                    res.redirect('/admin/products/edit-product/'+id);
                 })
             }
         })

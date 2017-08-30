@@ -16,6 +16,7 @@ exports.getHome = function (req, res) {
 
     Products.find({})
         .then((products) => {
+            console.log('line 19>>>',products);
             res.render('admin/products', {
                 products: products,
                 count: count
@@ -86,7 +87,7 @@ exports.saveNewProduct = function (req, res) {
             desc: desc,
             price: price2,
             category: category,
-            image: imageFile
+            image: imageFile // image name
         });
 
         product.save(function (err) {
@@ -135,16 +136,7 @@ exports.editProduct = function (req, res) {
         })
     Products.findOne({ '_id': req.params.id })
         .then((product) => {
-
-            var galleryDir = 'public/product_images/' + product._id + '/gallery';
-            var galleryImages = null;
-
-            fs.readdir(galleryDir, (err, files) => {
-
-                if (err) {
-                    console.log('line 145/admin_products.js')
-                } else {
-                    galleryImages = files;
+        
                     res.render('admin/edit_product.ejs', {
 
                         'title': product.title,
@@ -153,31 +145,31 @@ exports.editProduct = function (req, res) {
                         'desc': product.desc,
                         'categories': categories,
                         'price': parseFloat(product.price).toFixed(2),
-                        'image': product.image,
-                        'galleryImages': galleryImages
+                        'image': product.image
+                        
                     })
-                }
-            })
+                
+            
         })
         .catch((error) => {
             res.redirect('/admin/products')
         })
 }
-exports.saveEditProduct = function (req, res) {
 
+exports.saveEditProduct = function (req, res) {
     var imageFile = typeof req.files.image !== 'undefined' ? req.files.image.name : '';
 
     req.checkBody('title', 'Title must have a value').notEmpty();
     req.checkBody('desc', 'Description must have a value').notEmpty();
     req.checkBody('price', 'Price must have a value').isDecimal();
     req.checkBody('image', 'You have to upload the image').isImage(imageFile);
-
-    var title = req.body.title;
-    var slug = title.replace(/\s+/g, '-').toLowerCase();
-    var desc = req.body.desc;
-    var price = req.body.price;
-    var category = req.body.category;
-    var pimage = req.body.pimage;
+    var body = {};
+    body.title = req.body.title;
+    body.slug = body.title.replace(/\s+/g, '-').toLowerCase();
+    body.desc = req.body.desc;
+    body.price = req.body.price;
+    body.category = req.body.category;
+    body.image = imageFile;// image name
     var id = req.params.id;
 
     var errors = req.validationErrors();
@@ -185,7 +177,8 @@ exports.saveEditProduct = function (req, res) {
         req.session.errors = errors;
         res.redirect('/admin/products/edit-product/' + id);
     } else {
-        Products.findOne({ slug: slug, _id: { '$ne': id } }, (err, product) => {
+        //Findone product where slug is as per the given value but id should not be the same.
+        Products.findOne({ slug: body.slug, _id: { '$ne': id } }, (err, product) => {
             if (err) {
                 console.log(err)
             }
@@ -193,33 +186,28 @@ exports.saveEditProduct = function (req, res) {
                 req.flash('danger', 'Product title exists, choose another');
                 res.redirect('/admin/products/edit-product' + id);
             } else {
-                Products.findById(id, (err, product) => {
-                    if (err) {
-                        console.log(err);
-                    }
-                    product.title = title;
-                    product.slug = slug;
-                    product.desc = desc;
-                    product.price = parseFloat(price).toFixed(2);
-                    product.category = category;
-                    if (imageFile != "") {
-                        if (pimage != "") {
-                            fs.remove('public/product_images/' + id + '/' + pimage, (err) => {
-                                if (err) {
-                                    console.log(err);
-                                }
-                            });
-                        }
-                        var productImage = req.files.image;
-                        var path = "public/product_images/"+id+'/'+imageFile;
+                
+                Products.findByIdAndUpdate(id,body)
+                        .then((product)=>{
+                            Products.findOne({_id : product._id})
+                                    .then((product)=>{
+                                    fs.remove('product_images'+product._id+'/'+req.body.pimage,(err)=>{
+                                        if(err){
+                                            console.log(err);
+                                        }
+                                    var path = "public/product_images/"+id+'/'+imageFile;
+                                     req.files.image.mv(path,(err)=>{
+                                        if(err){
 
-                        productImage.mv(path,(err)=>{
-                            return console.log(err);
+                                            return console.log(err);
+                                        }else{
+                                            res.redirect('/admin/products/edit-product/'+id);
+                                        }
+                            
                         })
-                    }
-                    req.flash('success','Product edited');
-                    res.redirect('/admin/products/edit-product/'+id);
-                })
+                                    })
+                                    })
+                        })
             }
         })
     }

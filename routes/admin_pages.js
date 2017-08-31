@@ -54,7 +54,10 @@ exports.saveEditPage = function(req,res){
 	    .then((page)=>{
          Page.find({})
              .then((page)=>{
-                   
+                   Page.find({}).sort({'sorting' : 1})
+                        .then((pages)=>{
+                          app.locals.pages = pages; 
+                        })
                    res.render('admin/pages',{
 				    	             pages : page
 				                        })
@@ -69,7 +72,10 @@ exports.deletePage = function(req,res){
   Page.findByIdAndRemove(req.params._id)
       .then(()=>Page.find({}))
       .then((page)=>{
-
+      Page.find({}).sort({'sorting' : 1})
+          .then((pages)=>{
+            app.locals.pages = pages; 
+          })
       res.render('admin/pages',{
       pages : page
 

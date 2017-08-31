@@ -10,5 +10,7 @@ exports.getHome = function(req,res){
 
 exports.getPage = function(req,res){
 
-	res.send('Pages test')
+console.log(req.params.slug);
+	
+	
 }

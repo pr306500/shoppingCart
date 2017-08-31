@@ -16,7 +16,7 @@ exports.getHome = function (req, res) {
 
     Products.find({})
         .then((products) => {
-            console.log('line 19>>>',products);
+            
             res.render('admin/products', {
                 products: products,
                 count: count
@@ -136,20 +136,26 @@ exports.editProduct = function (req, res) {
         })
     Products.findOne({ '_id': req.params.id })
         .then((product) => {
-        
-                    res.render('admin/edit_product.ejs', {
+            if (categories.length > 0) {
 
-                        'title': product.title,
-                        'errors': errors,
-                        'id': product._id,
-                        'desc': product.desc,
-                        'categories': categories,
-                        'price': parseFloat(product.price).toFixed(2),
-                        'image': product.image
-                        
-                    })
-                
-            
+                res.render('admin/edit_product.ejs', {
+
+                    'title': product.title,
+                    'errors': errors,
+                    'id': product._id,
+                    'desc': product.desc,
+                    'categories': categories,
+                    'price': parseFloat(product.price).toFixed(2),
+                    'image': product.image
+
+                })
+            } else {
+
+                res.send('Internal issue occured, fresh it.')
+            }
+
+
+
         })
         .catch((error) => {
             res.redirect('/admin/products')
@@ -186,43 +192,44 @@ exports.saveEditProduct = function (req, res) {
                 req.flash('danger', 'Product title exists, choose another');
                 res.redirect('/admin/products/edit-product' + id);
             } else {
-                
-                Products.findByIdAndUpdate(id,body)
-                        .then((product)=>{
-                            Products.findOne({_id : product._id})
-                                    .then((product)=>{
-                                    fs.remove('product_images'+product._id+'/'+req.body.pimage,(err)=>{
-                                        if(err){
-                                            console.log(err);
-                                        }
-                                    var path = "public/product_images/"+id+'/'+imageFile;
-                                     req.files.image.mv(path,(err)=>{
-                                        if(err){
+
+                Products.findByIdAndUpdate(id, body)
+                    .then((product) => {
+                        Products.findOne({ _id: product._id })
+                            .then((product) => {
+                                fs.remove('product_images' + product._id + '/' + req.body.pimage, (err) => {
+                                    if (err) {
+                                        console.log(err);
+                                    }
+                                    var path = "public/product_images/" + id + '/' + imageFile;
+                                    req.files.image.mv(path, (err) => {
+                                        if (err) {
 
                                             return console.log(err);
-                                        }else{
-                                            res.redirect('/admin/products/edit-product/'+id);
+                                        } else {
+                                            res.redirect('/admin/products/edit-product/' + id);
                                         }
-                            
-                        })
+
                                     })
-                                    })
-                        })
+                                })
+                            })
+                    })
             }
         })
     }
 }
 
-exports.deleteCategory = function (req, res) {
+exports.deleteProduct = function (req, res) {
 
-    Category.findByIdAndRemove(req.params.slug)
-        .then(() => { Category.findOne({ _id: req.params.slug }) })
-        .then((category) => {
-            if (!category) {
-                Category.find({})
-                    .then((category) => {
-                        res.render('admin/categories', {
-                            categories: category
+    Products.findByIdAndRemove(req.params.id)
+        .then(() => { Products.findOne({ _id: req.params.id }) })
+        .then((products) => {
+            if (!products) {
+                Products.find({})
+                    .then((products) => {
+                        res.render('admin/products', {
+                            products: products,
+                            count : products.length
                         })
                     })
             }
@@ -257,7 +264,7 @@ exports.saveCategory = function (req, res) {
             slug: slug
         })
             .then((category) => {
-                console.log('@@@', category);
+                
                 if (category) {
                     req.flash('danger', 'Category exists, choose another');
                     res.render('admin/add_category', {

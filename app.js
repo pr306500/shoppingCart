@@ -164,6 +164,10 @@ router.route('/admin/products/edit-product/:id')
 
 router.route('/admin/products/edit-product/:id')
       .post(productController.saveEditProduct) 
+
+router.route('/admin/products/delete-product/:id')
+      .get(productController.deleteProduct)
+
 //Start the server 
 app.use('/',router);
 app.listen('3001',()=>{

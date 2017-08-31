@@ -16,7 +16,7 @@ exports.getHome = function (req, res) {
 
     Products.find({})
         .then((products) => {
-            
+
             res.render('admin/products', {
                 products: products,
                 count: count
@@ -229,7 +229,7 @@ exports.deleteProduct = function (req, res) {
                     .then((products) => {
                         res.render('admin/products', {
                             products: products,
-                            count : products.length
+                            count: products.length
                         })
                     })
             }
@@ -264,7 +264,7 @@ exports.saveCategory = function (req, res) {
             slug: slug
         })
             .then((category) => {
-                
+
                 if (category) {
                     req.flash('danger', 'Category exists, choose another');
                     res.render('admin/add_category', {

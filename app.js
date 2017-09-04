@@ -209,7 +209,9 @@ router.route('/cart/checkout')
 router.route('/cart/update/:slug')
       .get(pageController.clearCart)  
 
-          
+router.route('/cart/clear')
+      .get(pageController.allClear)
+
 //Start the server 
 app.use('/',router);
 app.listen('3001',()=>{

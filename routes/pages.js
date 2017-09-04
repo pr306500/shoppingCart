@@ -130,7 +130,7 @@ exports.clearCart = function(req,res){
            
            req.session.cart.splice(index,1)
            if(req.session.cart.length === 0){
-              delete re.session.cart;
+              delete req.session.cart;
            }
         
            res.redirect('/cart/checkout');
@@ -160,6 +160,13 @@ exports.clearCart = function(req,res){
 
 }
 
+exports.allClear = function(req,res){
+
+ delete req.session.cart;
+
+ res.redirect('/cart/checkout');
+
+}
 
 exports.checkout = function(req,res){
 

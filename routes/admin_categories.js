@@ -23,6 +23,7 @@ exports.addCategory = function(req,res){
 }
 
 exports.editCategory = function(req,res){
+  
   Category.findOne({'_id':req.params.slug})
           .then((category)=>{
 

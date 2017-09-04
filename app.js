@@ -13,6 +13,8 @@ var adminCategory = require('./routes/admin_categories.js');
 var fileUpload = require('express-fileupload');// req.files.image
 var Page = require('./models/pages');
 var Category = require('./models/category.js');
+
+
 /*
 Middleware used below
 
@@ -115,6 +117,13 @@ Page.find({}).sort({'sorting' : 1})
 /*It's used for rendering the static files like images, so it will automatically search in the public folder*/
 app.use(express.static(path.join(__dirname,'public')));
 
+app.get("*",(req,res,next)=>{
+
+  res.locals.cart = req.session.cart;
+  next();
+
+})
+
 router.route('/')
       .get(pageController.getHome)
 
@@ -174,11 +183,33 @@ router.route('/admin/products/edit-product/:id')
       .get(productController.editProduct)            
 
 router.route('/admin/products/edit-product/:id')
-      .post(productController.saveEditProduct) 
+      .post(productController.saveEditProduct)
 
-router.route('/:slug')
+router.route('/admin/products/delete-product/:id')       
+      .get(productController.deleteProduct);
+
+router.route('/products')
       .get(pageController.getPage)
 
+router.route('/products/:foods')
+      .get(pageController.getBySlug)
+
+/*GET product details*/
+
+router.route('/products/:category/:product')
+      .get(pageController.getDetails)
+
+
+router.route('/cart/add/:slug')
+      .get(pageController.addCart)
+
+router.route('/cart/checkout')
+      .get(pageController.checkout);
+
+router.route('/cart/update/:slug')
+      .get(pageController.clearCart)  
+
+          
 //Start the server 
 app.use('/',router);
 app.listen('3001',()=>{

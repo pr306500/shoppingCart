@@ -51,3 +51,25 @@
     <img src="smiley.gif" width="42" height="42">
     </td>
     Theory :- It will render smiley image at specific cellof a table.
+
+17. class="page-title"
+    class="btn btn-primary"
+    class="form-group"
+    class="form-control"
+    btn btn-default
+    <table class="table table-striped alignmiddle">
+
+18. <select name="category" class="form-control">
+            <% categories.forEach(function(cat){ %>
+                <option value="<%= cat.slug %>"><%= cat.title %></option>
+            <% }); %>
+    </select>
+
+19.  <input type="file" class="form-control" name="image" id="img"> // choose file option for attachment file
+     // name attribute 'image' will be passed to req.files.image.
+
+20. <div class="alert alert-danger">
+
+21. <h3 class="text-center">
+
+22. fs.readdir('dirname',(err,files)=>{})  

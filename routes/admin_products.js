@@ -89,11 +89,14 @@ exports.saveNewProduct = function (req, res) {
             category: category,
             image: imageFile // image name
         });
+        
+/* After the product info gets stored to mongo, we store image to the directory with the specific id 
+    that got stored in mongo.*/
 
-        product.save(function (err) {
-            if (err)
-                return console.log(err);
-
+        product.save()
+               .then(()=>{
+                if(!product.isNew){
+    
             mkdirp('public/product_images/' + product._id, function (err) {
                 return console.log(err);
             });/*it will make the directory path followed by the product ID.*/
@@ -117,7 +120,13 @@ exports.saveNewProduct = function (req, res) {
 
             req.flash('success', 'Product added!');
             res.redirect('/admin/products');
-        });
+        
+
+                }
+         }).catch((err)=>{
+            console.log(err);
+         })
+
     }
 
 }

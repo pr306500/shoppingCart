@@ -212,6 +212,8 @@ router.route('/cart/update/:slug')
 router.route('/cart/clear')
       .get(pageController.allClear)
 
+      
+
 //Start the server 
 app.use('/',router);
 app.listen('3001',()=>{

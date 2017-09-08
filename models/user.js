@@ -4,40 +4,43 @@ var Schema = mongoose.Schema;
 
 var UserSchema = new Schema({
 
-   'name':{
-     
-     'type':String,
-     'required':true
+  'name': {
 
-   },
+    'type': String,
+    'required': true
 
-   'email':{
+  },
 
-    'type':String,
-    'required':true
+  'email': {
 
-   },
+    'type': String,
+    'required': true
 
-   'username':{
-     
-     'type':String,
-     'required':true
+  },
 
-   },
+  'username': {
 
-   'password':{
+    'type': String,
+    'required': true
 
-     'type':String,
-     required:true
+  },
 
-   },
+  'password': {
 
-   'admin':{
+    'type': String,
+    required: true
 
-   'type':Number
+  },
 
-   }
+  'admin': {
+
+    'type': Number
+
+  }
 
 
 
 })
+
+var User = mongoose.model('User',UserSchema);
+module.exports = User;

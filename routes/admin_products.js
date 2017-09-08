@@ -89,43 +89,43 @@ exports.saveNewProduct = function (req, res) {
             category: category,
             image: imageFile // image name
         });
-        
-/* After the product info gets stored to mongo, we store image to the directory with the specific id 
-    that got stored in mongo.*/
+
+        /* After the product info gets stored to mongo, we store image to the directory with the specific id 
+            that got stored in mongo.*/
 
         product.save()
-               .then(()=>{
-                if(!product.isNew){
-    
-            mkdirp('public/product_images/' + product._id, function (err) {
-                return console.log(err);
-            });/*it will make the directory path followed by the product ID.*/
+            .then(() => {
+                if (!product.isNew) {
 
-            mkdirp('public/product_images/' + product._id + '/gallery', function (err) {
-                return console.log(err);
-            });/*it will make the directory path followed by the gallery folder.*/
+                    mkdirp('public/product_images/' + product._id, function (err) {
+                        return console.log(err);
+                    });/*it will make the directory path followed by the product ID.*/
 
-            mkdirp('public/product_images/' + product._id + '/gallery/thumbs', function (err) {
-                return console.log(err);
-            });/*it will make the directory path followed by the thumbs folder.*/
+                    mkdirp('public/product_images/' + product._id + '/gallery', function (err) {
+                        return console.log(err);
+                    });/*it will make the directory path followed by the gallery folder.*/
 
-            if (imageFile != "") {
-                var productImage = req.files.image;
-                var path = 'public/product_images/' + product._id + '/' + imageFile; //imageFile - image file name.
-                /*In this we are moving the image to the path*/
-                productImage.mv(path, function (err) {
-                    return console.log(err);
-                });
-            }
+                    mkdirp('public/product_images/' + product._id + '/gallery/thumbs', function (err) {
+                        return console.log(err);
+                    });/*it will make the directory path followed by the thumbs folder.*/
 
-            req.flash('success', 'Product added!');
-            res.redirect('/admin/products');
-        
+                    if (imageFile != "") {
+                        var productImage = req.files.image;
+                        var path = 'public/product_images/' + product._id + '/' + imageFile; //imageFile - image file name.
+                        /*In this we are moving the image to the path*/
+                        productImage.mv(path, function (err) {
+                            return console.log(err);
+                        });
+                    }
+
+                    req.flash('success', 'Product added!');
+                    res.redirect('/admin/products');
+
 
                 }
-         }).catch((err)=>{
-            console.log(err);
-         })
+            }).catch((err) => {
+                console.log(err);
+            })
 
     }
 
@@ -184,7 +184,7 @@ exports.saveEditProduct = function (req, res) {
     body.desc = req.body.desc;
     body.price = req.body.price;
     body.category = req.body.category;
-    body.image = imageFile;// image name
+    body.image = (imageFile||req.body.pimage);// image name
     var id = req.params.id;
 
     var errors = req.validationErrors();
@@ -206,21 +206,26 @@ exports.saveEditProduct = function (req, res) {
                     .then((product) => {
                         Products.findOne({ _id: product._id })
                             .then((product) => {
-                                fs.remove('product_images' + product._id + '/' + req.body.pimage, (err) => {
-                                    if (err) {
-                                        console.log(err);
-                                    }
-                                    var path = "public/product_images/" + id + '/' + imageFile;
-                                    req.files.image.mv(path, (err) => {
+                                if (req.files.hasOwnProperty('mv')) {
+                                    fs.remove('product_images' + product._id + '/' + req.body.pimage, (err) => {
                                         if (err) {
-
-                                            return console.log(err);
-                                        } else {
-                                            res.redirect('/admin/products/edit-product/' + id);
+                                            console.log(err);
                                         }
+                                        var path = "public/product_images" + id + '/' + imageFile;
+                                        req.files.image.mv(path, (err) => {
+                                            if (err) {
 
+                                                return console.log(err);
+                                            } else {
+                                                res.redirect('/admin/products/edit-product/' + id);
+                                            }
+
+                                        })
                                     })
-                                })
+                                } else {
+
+                                    res.redirect('/admin/products');
+                                }
                             })
                     })
             }

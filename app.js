@@ -13,7 +13,14 @@ var adminCategory = require('./routes/admin_categories.js');
 var fileUpload = require('express-fileupload');// req.files.image
 var Page = require('./models/pages');
 var Category = require('./models/category.js');
+var passport = require('passport');
+var User = require('./routes/user');
+require('./config/passport')(passport);
 
+// Passport middleware
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 /*
 Middleware used below
@@ -120,6 +127,8 @@ app.use(express.static(path.join(__dirname,'public')));
 app.get("*",(req,res,next)=>{
 
   res.locals.cart = req.session.cart;
+  res.locals.user = req.user || null;
+  //app.locals.cart;
   next();
 
 })
@@ -212,12 +221,22 @@ router.route('/cart/update/:slug')
 router.route('/cart/clear')
       .get(pageController.allClear)
 
-      
+router.route('/users/register')
+      .get(User.register)
+
+router.route('/users/register')
+      .post(User.postRegister)
+
+router.route('/users/login')
+      .get(User.getLogin); 
+
+router.route('/users/login')
+      .post(User.afterLogin);       
 
 //Start the server 
 app.use('/',router);
-app.listen('3001',()=>{
+app.listen('3031',()=>{
 
-console.log('server started on port',+3001);
+console.log('server started on port',+3031);
 
 });

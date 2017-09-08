@@ -9,6 +9,7 @@
   "author": "Pranjal Sharma <pranjal.sharma306500@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^1.0.3",
     "connect-flash": "^0.1.1",
     "ejs": "^2.5.7",
     "express": "^4.15.4",
@@ -19,6 +20,9 @@
     "fs-extra": "^4.0.1",
     "mkdir": "0.0.2",
     "mongoose": "^4.11.7",
+    "nodemon": "^1.12.0",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
     "resize-img": "^1.1.2"
   }
 }

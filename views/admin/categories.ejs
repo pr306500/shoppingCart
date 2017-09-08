@@ -1,27 +1,48 @@
 <%- include('../_layouts/adminheader') %>
 
-<h2 class="page-title">Categories</h2>
-<a href="/admin/categories/add-category" class="btn btn-primary">Add a new category</a>
-<br><br>
+    <h2 class="page-title">Categories</h2>
+    <a href="/admin/categories/add-category" class="btn btn-primary">Add a new category</a>
+    <br><br>
 
-<table class="table table-striped">
+    <table class="table table-striped">
 
-    <thead>
-        <tr>
-            <th>Category</th>
-            <th>Edit</th>
-            <th>Delete</th>
-        </tr>
-    </thead>
-    <tbody>
-        <% categories.forEach(function(cat){ %>
-        <tr>
-            <td><%= cat.title %></td>
-            <td><a href="/admin/categories/edit-category/<%= cat._id %>">Edit</a></td>
-            <td><a class="confirmDeletion" href="/admin/categories/delete-category/<%= cat._id %>">Delete</a></td>
-        </tr>
-        <% }); %>
-    </tbody>
-</table>
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% categories.forEach(function(cat){ %>
+                <tr>
+                    <td>
+                        <%= cat.title %>
+                    </td>
+                    <td><a href="/admin/categories/edit-category/<%= cat._id %>">Edit</a></td>
+                    <td><a class="confirmDeletion" href="javascript:void(0)" ><button onclick="myFunction('<%= cat._id %>')">Delete</button></a></td>
+                </tr>
+                <% }); %>
+        </tbody>
+    </table>
+    <script>
+        function myFunction(id) {
 
-<%- include('../_layouts/adminfooter') %>
+            var r = confirm("Do you want to delete it ?");
+            if (r == true) {
+               $.ajax({
+                   url: '/admin/categories/delete-category/'+id,
+                   type: 'GET',
+                   sucess: function(data){
+
+                   }, error: function(){
+                       
+                   }
+               })
+            } else {
+               var txt = "You pressed Cancel!";
+            }
+        }
+
+    </script>
+    <%- include('../_layouts/adminfooter') %>

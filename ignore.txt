@@ -1,10 +1,11 @@
 var arr = [1,1,3,3,2,2,3,1,1,2,2,3,2,2,5,5,5,0,1,2,3,4,3,2];
 let finlArr = [];
+let descArr = [];
 function findPair(_arr,addNbr){
- let gotReduced = false,
+    let gotReduced = false,
+        gotInc = false,
      updatedArr = [];
   for(let i = 1; i < arr.length; i++){
-     //console.log('$$',_arr,updatedArr);
      if(_arr[i - 1] > _arr[i]){
         updatedArr.push(i+addNbr);
         gotReduced = true;
@@ -12,16 +13,15 @@ function findPair(_arr,addNbr){
      else if(_arr[i - 1] < _arr[i] && gotReduced){
         updatedArr.push(i+addNbr);
         finlArr.push(updatedArr);
+        gotInc = true;
         findPair(_arr.slice(i, _arr.length),i+addNbr);
         break;
      }
-     else if(_arr.length == i && gotReduced){
-        finlArr.push(updatedArr);
+     else if(_arr.length == i && gotReduced && !gotInc){
+        descArr.push(updatedArr);
      }
-    
   }
-
 }
 
 findPair(arr,0);
-console.log(finlArr);
+console.log(finlArr,'## ',descArr);
